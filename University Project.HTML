@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biotechnology ICT LAB Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eef7f2;
+        }
+        header {
+            background-color: #1b8b55;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+        nav {
+            background-color: #116b40;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #0a4d2e;
+        }
+        .active {
+            background-color: #0a4d2e;
+        }
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .active-tab {
+            display: block;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #1b8b55;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #116b40;
+        }
+        .receipt {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+        .compatibility-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .compatible {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .incompatible {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: -5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .biotech-icon {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .biotech-icon img {
+            width: 80px;
+            height: 80px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Biotechnology ICT LAB Project</h1>
+        <p>Made by Taha, Hussain, Umer and Ali</p>
+    </header>
+    
+    <nav>
+        <a href="#" class="tab-link active" onclick="openTab('appointment')">Appointment Booking</a>
+        <a href="#" class="tab-link" onclick="openTab('bmi')">BMI Calculator</a>
+        <a href="#" class="tab-link" onclick="openTab('blood')">Blood Compatibility</a>
+    </nav>
+    
+    <!-- Appointment Booking Tab -->
+    <div id="appointment" class="container tab-content active-tab">
+        <div class="biotech-icon">
+            <!-- Simple DNA Icon using text -->
+            <div style="font-size: 48px; color: #1b8b55;">🧬</div>
+        </div>
+        <h2>Book an Appointment</h2>
+        <form id="appointmentForm">
+            <label for="patientName">Your Full Name:</label>
+            <input type="text" id="patientName">
+            <div id="nameError" class="error-message">Please enter your name</div>
+            
+            <label for="hospital">Select Hospital:</label>
+            <select id="hospital">
+                <option value="">-- Select Hospital --</option>
+                <option value="Ashfaq Memorial Hospital">Ashfaq Memorial Hospital</option>
+                <option value="Karachi Hospital">Karachi Hospital</option>
+                <option value="Aga Khan Hospital">Aga Khan Hospital</option>
+                <option value="Dow Hospital">Dow Hospital</option>
+                <option value="Jinnah Hospital">Jinnah Hospital</option>
+            </select>
+            <div id="hospitalError" class="error-message">Please select a hospital</div>
+            
+            <label for="doctor">Select Doctor:</label>
+            <select id="doctor" disabled>
+                <option value="">-- Select Hospital First --</option>
+            </select>
+            <div id="doctorError" class="error-message">Please select a doctor</div>
+            
+            <label for="appointmentDate">Appointment Date:</label>
+            <input type="date" id="appointmentDate">
+            <div id="dateError" class="error-message">Please select a valid date</div>
+            
+            <label for="appointmentTime">Appointment Time:</label>
+            <input type="time" id="appointmentTime">
+            <div id="timeError" class="error-message">Please select a time between 9:00 AM and 5:00 PM</div>
+            
+            <button type="button" onclick="bookAppointment()">Book Appointment</button>
+        </form>
+        
+        <div id="appointmentReceipt" class="receipt">
+            <h3>Appointment Confirmation</h3>
+            <p><strong>Patient Name:</strong> <span id="receiptName"></span></p>
+            <p><strong>Hospital:</strong> <span id="receiptHospital"></span></p>
+            <p><strong>Doctor:</strong> <span id="receiptDoctor"></span></p>
+            <p><strong>Date:</strong> <span id="receiptDate"></span></p>
+            <p><strong>Time:</strong> <span id="receiptTime"></span></p>
+            <p><strong>Appointment ID:</strong> <span id="receiptId"></span></p>
+            <p><em>Please arrive 15 minutes before your scheduled appointment time.</em></p>
+            <button onclick="printReceipt()">Print Receipt</button>
+        </div>
+    </div>
+    
+    <!-- BMI Calculator Tab -->
+    <div id="bmi" class="container tab-content">
+        <div class="biotech-icon">
+            <!-- Simple microscope icon using text -->
+            <div style="font-size: 48px; color: #1b8b55;">🔬</div>
+        </div>
+        <h2>BMI Calculator</h2>
+        <form id="bmiForm">
+            <label for="height">Height (cm):</label>
+            <input type="number" id="height" min="50" max="250">
+            <div id="heightError" class="error-message">Please enter a valid height between 50cm and 250cm</div>
+            
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" min="10" max="300">
+            <div id="weightError" class="error-message">Please enter a valid weight between 10kg and 300kg</div>
+            
+            <button type="button" onclick="calculateBMI()">Calculate BMI</button>
+        </form>
+        
+        <div id="bmiResult" style="margin-top: 20px; display: none;">
+            <h3>Your BMI Result</h3>
+            <p>Your BMI: <strong><span id="bmiValue"></span></strong></p>
+            <p>Category: <strong><span id="bmiCategory"></span></strong></p>
+            <div id="bmiExplanation"></div>
+        </div>
+    </div>
+    
+    <!-- Blood Compatibility Tab -->
+    <div id="blood" class="container tab-content">
+        <div class="biotech-icon">
+            <!-- Simple blood drop icon using text -->
+            <div style="font-size: 48px; color: #1b8b55;">🩸</div>
+        </div>
+        <h2>Blood Type Compatibility Checker</h2>
+        <p>Check if a donor's blood type is compatible with a recipient's blood type.</p>
+        
+        <label for="donorBloodType">Donor Blood Type:</label>
+        <select id="donorBloodType">
+            <option value="O-">O-</option>
+            <option value="O+">O+</option>
+            <option value="A-">A-</option>
+            <option value="A+">A+</option>
+            <option value="B-">B-</option>
+            <option value="B+">B+</option>
+            <option value="AB-">AB-</option>
+            <option value="AB+">AB+</option>
+        </select>
+        
+        <label for="recipientBloodType">Recipient Blood Type:</label>
+        <select id="recipientBloodType">
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+        </select>
+        
+        <button onclick="checkBloodCompatibility()">Check Compatibility</button>
+        
+        <div id="compatibilityResult" class="compatibility-result">
+            <!-- Result will be shown here -->
+        </div>
+    </div>
+
+    <script>
+        // Doctor data - Pakistani names
+        var hospitalDoctors = {
+            "Ashfaq Memorial Hospital": ["Dr. Aisha Khan", "Dr. Farhan Ahmed", "Dr. Sana Malik"],
+            "Karachi Hospital": ["Dr. Imran Qureshi", "Dr. Nadia Iqbal", "Dr. Bilal Siddiqui"],
+            "Aga Khan Hospital": ["Dr. Zainab Raza", "Dr. Asad Ali", "Dr. Fatima Hassan"],
+            "Dow Hospital": ["Dr. Tariq Mahmood", "Dr. Saima Shahid", "Dr. Omar Farooq"],
+            "Jinnah Hospital": ["Dr. Ayesha Aziz", "Dr. Kamran Yusuf", "Dr. Hina Javed"]
+        };
+
+        // Fix the tab functionality
+        function openTab(tabId) {
+            // Hide all tabs
+            var tabs = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].style.display = "none";
+            }
+            
+            // Remove active class from all tab links
+            var links = document.getElementsByClassName("tab-link");
+            for (var i = 0; i < links.length; i++) {
+                links[i].classList.remove("active");
+            }
+            
+            // Show the selected tab
+            document.getElementById(tabId).style.display = "block";
+            
+            // Add active class to the clicked tab link
+            for (var i = 0; i < links.length; i++) {
+                if (links[i].getAttribute("onclick").includes(tabId)) {
+                    links[i].classList.add("active");
+                }
+            }
+        }
+
+        // Hospital and doctor selection
+        document.getElementById('hospital').onchange = function() {
+            var doctorSelect = document.getElementById('doctor');
+            doctorSelect.innerHTML = '<option value="">-- Select Doctor --</option>';
+            doctorSelect.disabled = true;
+            
+            if (this.value) {
+                doctorSelect.disabled = false;
+                var doctors = hospitalDoctors[this.value];
+                for (var i = 0; i < doctors.length; i++) {
+                    var option = document.createElement('option');
+                    option.value = doctors[i];
+                    option.textContent = doctors[i];
+                    doctorSelect.appendChild(option);
+                }
+            }
+        };
+
+        // Page initialization
+        window.onload = function() {
+            // Set minimum date to today for appointment booking
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+            var yyyy = today.getFullYear();
+            var formattedDate = yyyy + '-' + mm + '-' + dd;
+            document.getElementById('appointmentDate').min = formattedDate;
+            
+            // Make appointment tab active by default
+            document.getElementById('appointment').style.display = "block";
+        };
+
+        // Book appointment
+        function bookAppointment() {
+            // Hide all error messages
+            var errorMessages = document.getElementsByClassName('error-message');
+            for (var i = 0; i < errorMessages.length; i++) {
+                errorMessages[i].style.display = 'none';
+            }
+            
+            // Get form values
+            var name = document.getElementById('patientName').value.trim();
+            var hospital = document.getElementById('hospital').value;
+            var doctor = document.getElementById('doctor').value;
+            var date = document.getElementById('appointmentDate').value;
+            var time = document.getElementById('appointmentTime').value;
+            
+            // Check if all fields are filled
+            var isValid = true;
+            
+            if (!name) {
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!hospital) {
+                document.getElementById('hospitalError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!doctor) {
+                document.getElementById('doctorError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!date) {
+                document.getElementById('dateError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!time) {
+                document.getElementById('timeError').style.display = 'block';
+                isValid = false;
+            } else {
+                // Check if time is between 9 AM and 5 PM
+                var hour = parseInt(time.split(':')[0]);
+                if (hour < 9 || hour >= 17) {
+                    document.getElementById('timeError').style.display = 'block';
+                    isValid = false;
+                }
+            }
+            
+            if (!isValid) return;
+            
+            // Format date for display
+            var appointmentDate = new Date(date);
+            var formattedDate = appointmentDate.toDateString();
+            
+            // Format time for display
+            var timeArr = time.split(':');
+            var hours = parseInt(timeArr[0]);
+            var minutes = timeArr[1];
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            var formattedHours = hours % 12 || 12;
+            var formattedTime = formattedHours + ':' + minutes + ' ' + ampm;
+            
+            // Generate random appointment ID
+            var appointmentId = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+            
+            // Fill receipt
+            document.getElementById('receiptName').textContent = name;
+            document.getElementById('receiptHospital').textContent = hospital;
+            document.getElementById('receiptDoctor').textContent = doctor;
+            document.getElementById('receiptDate').textContent = formattedDate;
+            document.getElementById('receiptTime').textContent = formattedTime;
+            document.getElementById('receiptId').textContent = appointmentId;
+            
+            // Show receipt
+            document.getElementById('appointmentReceipt').style.display = 'block';
+            
+            // Scroll to receipt
+            document.getElementById('appointmentReceipt').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Print receipt
+        function printReceipt() {
+            var receiptContent = document.getElementById('appointmentReceipt').innerHTML;
+            var printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>Biotechnology Appointment Receipt</title>');
+            printWindow.document.write('<style>body { font-family: Arial, sans-serif; padding: 20px; } h3 { color: #1b8b55; } p { margin: 8px 0; }</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(receiptContent);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            setTimeout(function() {
+                printWindow.print();
+            }, 500);
+        }
+
+        // BMI Calculator
+        function calculateBMI() {
+            // Hide error messages
+            document.getElementById('heightError').style.display = 'none';
+            document.getElementById('weightError').style.display = 'none';
+            
+            // Get height and weight
+            var height = document.getElementById('height').value;
+            var weight = document.getElementById('weight').value;
+            
+            // Check if values are valid
+            var isValid = true;
+            
+            if (!height || height < 50 || height > 250) {
+                document.getElementById('heightError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!weight || weight < 10 || weight > 300) {
+                document.getElementById('weightError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            // Calculate BMI
+            var heightInMeters = height / 100;
+            var bmi = weight / (heightInMeters * heightInMeters);
+            
+            // Fix for NaN result
+            if (isNaN(bmi)) {
+                alert("Please enter valid numbers for height and weight");
+                return;
+            }
+            
+            document.getElementById('bmiValue').textContent = bmi.toFixed(1);
+            
+            // Get category and explanation
+            var category, explanation;
+            if (bmi < 18.5) {
+                category = "Underweight";
+                explanation = "Being underweight can lead to nutritional deficiencies and weakened immune system. Consider consulting with a healthcare provider about healthy weight gain strategies.";
+            } else if (bmi < 25) {
+                category = "Normal weight";
+                explanation = "You are within the healthy weight range for your height. Maintain a balanced diet and regular physical activity to stay healthy.";
+            } else if (bmi < 30) {
+                category = "Overweight";
+                explanation = "Being overweight may increase your risk for certain health conditions. Consider moderate changes to diet and increasing physical activity.";
+            } else {
+                category = "Obese";
+                explanation = "Obesity is associated with higher risks of cardiovascular disease, diabetes, and other health issues. It's recommended to consult with a healthcare provider about weight management strategies.";
+            }
+            
+            document.getElementById('bmiCategory').textContent = category;
+            document.getElementById('bmiExplanation').innerHTML = "<p>" + explanation + "</p>";
+            document.getElementById('bmiResult').style.display = 'block';
+            
+            // Scroll to result
+            document.getElementById('bmiResult').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Blood Compatibility Checker - Simplified with biotech theme
+        function checkBloodCompatibility() {
+            var donorType = document.getElementById('donorBloodType').value;
+            var recipientType = document.getElementById('recipientBloodType').value;
+            var resultDiv = document.getElementById('compatibilityResult');
+            
+            // Blood compatibility rules
+            var compatibility = {
+                "O-": ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
+                "O+": ["O+", "A+", "B+", "AB+"],
+                "A-": ["A-", "A+", "AB-", "AB+"],
+                "A+": ["A+", "AB+"],
+                "B-": ["B-", "B+", "AB-", "AB+"],
+                "B+": ["B+", "AB+"],
+                "AB-": ["AB-", "AB+"],
+                "AB+": ["AB+"]
+            };
+            
+            // Check if compatible
+            var isCompatible = false;
+            for (var i = 0; i < compatibility[donorType].length; i++) {
+                if (compatibility[donorType][i] === recipientType) {
+                    isCompatible = true;
+                    break;
+                }
+            }
+            
+            // Clear previous class
+            resultDiv.className = 'compatibility-result';
+            // Add appropriate class
+            if (isCompatible) {
+                resultDiv.classList.add('compatible');
+            } else {
+                resultDiv.classList.add('incompatible');
+            }
+            
+            // Show result with biotechnology themed explanation
+            resultDiv.innerHTML = 
+                "<h3>Compatibility Result:</h3>" +
+                "<p>Donor Blood Type: <strong>" + donorType + "</strong></p>" +
+                "<p>Recipient Blood Type: <strong>" + recipientType + "</strong></p>" +
+                "<p style='font-size: 18px; font-weight: bold;'>" +
+                (isCompatible ? '✓ COMPATIBLE' : '✗ NOT COMPATIBLE') +
+                "</p>" +
+                "<p>" + (isCompatible ? 
+                    'The molecular markers and antigens present in these blood types allow for safe transfusion.' : 
+                    'The antigens present in the donor blood would trigger an immune response in the recipient.') +
+                "</p>" +
+                "<p><em>" + (isCompatible ? 
+                    'On a cellular level, the recipient\'s immune system will not recognize the donor\'s cells as foreign.' : 
+                    'The recipient\'s antibodies would attack the donor\'s red blood cells, causing agglutination and hemolysis.') +
+                "</em></p>";
+            
+            resultDiv.style.display = 'block';
+            
+            // Scroll to result
+            resultDiv.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
